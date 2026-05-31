@@ -1,0 +1,74 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  letter-spacing: 0;
+}
+
+.header p,
+.panel p {
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.link,
+.panel button {
+  padding: 9px 14px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--color-primary);
+  background: var(--color-primary);
+  color: white;
+  text-decoration: none;
+  font-weight: 650;
+}
+
+.panel {
+  display: grid;
+  gap: 10px;
+  max-width: 560px;
+  padding: 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.panel label {
+  font-weight: 700;
+}
+
+.panel select {
+  min-width: 0;
+  padding: 10px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.panel button {
+  width: fit-content;
+}
+
+.panel button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .header {
+    flex-direction: column;
+  }
+}
