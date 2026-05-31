@@ -1,0 +1,22 @@
+.control {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--color-text);
+  padding: 9px 12px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(129, 199, 132, 0.26);
+  outline: none;
+}
+
+.control:disabled {
+  background: #f3f4f6;
+  color: var(--color-muted);
+  cursor: not-allowed;
+}

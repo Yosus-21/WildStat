@@ -1,0 +1,33 @@
+.empty {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  padding: 54px 24px;
+  text-align: center;
+}
+
+.icon {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 24px;
+}
+
+.empty h3 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 18px;
+}
+
+.empty p {
+  max-width: 440px;
+  color: var(--color-muted);
+}
+
+.action {
+  margin-top: 6px;
+}

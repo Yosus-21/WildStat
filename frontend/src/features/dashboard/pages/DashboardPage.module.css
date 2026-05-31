@@ -1,0 +1,147 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 210px;
+  padding: 28px;
+  border-radius: 22px;
+  color: #fff;
+  background:
+    linear-gradient(120deg, rgba(15, 61, 35, 0.92), rgba(27, 94, 32, 0.82)),
+    url('../../../assets/hero.png') center/cover;
+  box-shadow: 0 24px 70px rgba(27, 94, 32, 0.22);
+}
+
+.hero span {
+  display: inline-flex;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.82;
+}
+
+.hero h2 {
+  margin: 0;
+  max-width: 720px;
+  color: #fff;
+  font-size: clamp(28px, 4vw, 46px);
+  letter-spacing: -0.03em;
+}
+
+.hero p {
+  max-width: 640px;
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.hero a {
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--color-primary);
+  font-weight: 800;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.loadingCard {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  gap: 16px;
+}
+
+.panel {
+  padding: 18px;
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.panelHeader h3 {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.panelHeader p,
+.reviewItem span,
+.mediaItem span {
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+.panelHeader a {
+  font-weight: 800;
+}
+
+.stack,
+.reviewList,
+.mediaList {
+  display: grid;
+  gap: 10px;
+}
+
+.reviewItem,
+.mediaItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: #fbfdfb;
+  text-decoration: none;
+}
+
+.reviewItem strong,
+.mediaItem strong {
+  display: block;
+  color: var(--color-text);
+  font-size: 14px;
+}
+
+@media (max-width: 1100px) {
+  .statGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .statGrid {
+    grid-template-columns: 1fr;
+  }
+}

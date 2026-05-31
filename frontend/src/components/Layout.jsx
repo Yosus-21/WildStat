@@ -1,20 +1,30 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import styles from './Layout.module.css';
 
 const NAV_ITEMS = [
   {
-    section: 'Carga',
+    section: 'General',
     links: [
-      { to: '/media/upload', label: 'Subir imagen/video', icon: '⬆️' },
+      { to: '/dashboard', label: 'Dashboard', icon: '◆' },
+      { to: '/projects', label: 'Proyectos', icon: '◇' },
+      { to: '/cameras', label: 'Cámaras', icon: '⌖' },
     ],
   },
   {
-    section: 'Revisión',
+    section: 'Operación',
     links: [
-      { to: '/detections/pending', label: 'Pendientes', icon: '⏳' },
-      { to: '/detections/validated', label: 'Validadas', icon: '✅' },
-      { to: '/detections/discarded', label: 'Descartadas', icon: '🗑️' },
+      { to: '/media/upload', label: 'Archivos', icon: '▣' },
+      { to: '/detections/pending', label: 'Detecciones', icon: '◎' },
+      { to: '/detections/pending', label: 'Validación', icon: '✓' },
+    ],
+  },
+  {
+    section: 'Listas',
+    links: [
+      { to: '/detections/validated', label: 'Validadas', icon: '●' },
+      { to: '/detections/discarded', label: 'Descartadas', icon: '×' },
     ],
   },
   {
@@ -26,8 +36,9 @@ const NAV_ITEMS = [
   {
     section: 'Analytics',
     links: [
-      { to: '/analytics', label: 'Dashboard Analytics', icon: '📈' },
-      { to: '/reports', label: 'Reportes', icon: '📄' },
+      { to: '/analytics', label: 'Analytics', icon: '▧' },
+      { to: '/reports', label: 'Reportes', icon: '◫' },
+      { to: '/reports', label: 'Configuración', icon: '⚙' },
     ],
   },
 ];
@@ -35,8 +46,12 @@ const NAV_ITEMS = [
 export default function Layout() {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const [collapsed, setCollapsed] = useState(false);
 
   const pageLabel = (() => {
+    if (location.pathname.includes('/dashboard')) return 'Dashboard';
+    if (location.pathname.includes('/projects')) return 'Proyectos';
+    if (location.pathname.includes('/cameras')) return 'Cámaras';
     if (location.pathname.includes('/media/upload')) return 'Subir imagen/video';
     if (location.pathname.includes('/pending')) return 'Detecciones pendientes';
     if (location.pathname.includes('/validated') && location.pathname.includes('/detections'))
@@ -50,10 +65,22 @@ export default function Layout() {
   })();
 
   return (
-    <div className={styles.shell}>
-      <aside className={styles.sidebar}>
+    <div className={`${styles.shell} ${collapsed ? styles.collapsed : ''}`}>
+      <aside className={styles.sidebar} aria-label="Navegación principal">
         <div className={styles.logo}>
-          <h1><span>🐆</span> WildStat</h1>
+          <div className={styles.logoMark}>W</div>
+          <div className={styles.logoText}>
+            <h1>WildStat</h1>
+            <span>Fauna Intelligence</span>
+          </div>
+          <button
+            type="button"
+            className={styles.collapseBtn}
+            onClick={() => setCollapsed((value) => !value)}
+            aria-label={collapsed ? 'Expandir menú' : 'Colapsar menú'}
+          >
+            {collapsed ? '›' : '‹'}
+          </button>
         </div>
 
         <nav className={styles.nav}>
@@ -77,20 +104,31 @@ export default function Layout() {
         </nav>
 
         <div className={styles.userBox}>
+          <div className={styles.avatar} aria-hidden="true">{user?.name?.slice(0, 1) || 'U'}</div>
+          <div className={styles.userMeta}>
           <div className={styles.userName}>{user?.name}</div>
           <div className={styles.userRole}>{user?.role}</div>
+          </div>
           <button className={styles.logoutBtn} onClick={logout}>
-            Cerrar sesión
+            Salir
           </button>
         </div>
       </aside>
 
       <div className={styles.main}>
         <header className={styles.topbar}>
-          <span className={styles.pageTitle}>{pageLabel}</span>
-          <span style={{ fontSize: 12, color: 'var(--color-text-muted)' }}>
-            {user?.email}
-          </span>
+          <div>
+            <span className={styles.projectLabel}>Monitoreo Jaguar Palmarito 2026</span>
+            <span className={styles.pageTitle}>{pageLabel}</span>
+          </div>
+          <label className={styles.search}>
+            <span>⌕</span>
+            <input type="search" placeholder="Buscar proyecto, cámara o detección" />
+          </label>
+          <div className={styles.topUser}>
+            <span>{user?.email}</span>
+            <div className={styles.topAvatar}>{user?.name?.slice(0, 1) || 'U'}</div>
+          </div>
         </header>
         <main className={styles.content}>
           <Outlet />

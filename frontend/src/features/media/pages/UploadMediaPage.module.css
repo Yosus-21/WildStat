@@ -69,7 +69,7 @@
 
 .panel,
 .resultPanel {
-  padding: 16px;
+  padding: 20px;
 }
 
 .formGrid {
@@ -96,6 +96,38 @@
   background: #fff;
   color: var(--color-text);
   outline: none;
+}
+
+.dropZone {
+  grid-column: 1 / -1;
+  min-height: 150px;
+  justify-content: center;
+  padding: 18px;
+  border: 1.5px dashed rgba(27, 94, 32, 0.28);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(232, 245, 233, 0.72), rgba(255, 255, 255, 0.92));
+  color: var(--color-primary);
+  text-align: center;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+
+.dropZone:hover {
+  border-color: var(--color-primary);
+  background: #f4fbf5;
+  transform: translateY(-1px);
+}
+
+.dropCopy {
+  color: var(--color-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.dropZone input {
+  max-width: 360px;
+  margin: 0 auto;
+  background: #fff;
 }
 
 .formGrid input:focus,

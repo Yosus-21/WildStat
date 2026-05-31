@@ -1,0 +1,110 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 14px;
+}
+
+.segmented {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: #f8faf9;
+}
+
+.segmented button {
+  min-width: 72px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--color-muted);
+  font-weight: 800;
+}
+
+.segmented .active {
+  background: #fff;
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.cameraCard {
+  padding: 18px;
+}
+
+.cameraTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cameraIcon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 20px;
+}
+
+.cameraCard h3 {
+  margin: 16px 0 4px;
+  color: var(--color-text);
+  font-size: 20px;
+}
+
+.cameraCard p {
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+.cameraCard dl {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.cameraCard dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cameraCard dt {
+  color: var(--color-muted);
+  font-size: 12px;
+}
+
+.cameraCard dd {
+  color: var(--color-text);
+  font-weight: 700;
+  text-align: right;
+}
+
+@media (max-width: 1050px) {
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .toolbar,
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,53 @@
+.card {
+  display: flex;
+  gap: 14px;
+  padding: 18px;
+}
+
+.icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  font-size: 20px;
+}
+
+.primary {
+  background: var(--color-primary-soft);
+}
+
+.success {
+  background: #dcfce7;
+}
+
+.warning {
+  background: #fef3c7;
+}
+
+.info {
+  background: #dbeafe;
+}
+
+.card p {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.card strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-text);
+  font-size: 28px;
+  line-height: 1;
+}
+
+.card span {
+  display: block;
+  margin-top: 6px;
+  color: var(--color-muted);
+  font-size: 12px;
+}

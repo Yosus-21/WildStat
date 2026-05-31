@@ -4,6 +4,11 @@ import { detectionsApi } from '../api/detectionsApi';
 import StatusBadge from '../../../components/StatusBadge';
 import Spinner from '../../../components/Spinner';
 import ErrorMessage from '../../../components/ErrorMessage';
+import Badge from '../../../components/ui/Badge';
+import Button from '../../../components/ui/Button';
+import Card from '../../../components/ui/Card';
+import EmptyState from '../../../components/ui/EmptyState';
+import PageHeader from '../../../components/ui/PageHeader';
 import styles from './DetectionsListPage.module.css';
 
 function fmt(val) {
@@ -55,6 +60,12 @@ export default function PendingDetectionsPage() {
 
   return (
     <div className={styles.page}>
+      <PageHeader
+        eyebrow="Centro de revisión"
+        title="Detecciones pendientes"
+        description="Eventos sugeridos por IA listos para inspección científica, con frame clave, confianza y contexto de cámara."
+        actions={<Button variant="secondary" onClick={load}>Actualizar</Button>}
+      />
       <div className={styles.toolbar}>
         <div className={styles.stats}>
           <span className={styles.count}>{filtered.length} detección{filtered.length !== 1 ? 'es' : ''} pendiente{filtered.length !== 1 ? 's' : ''}</span>
@@ -62,7 +73,6 @@ export default function PendingDetectionsPage() {
             <span className={styles.countMuted}>(de {detections.length} total)</span>
           )}
         </div>
-        <button className={styles.refreshBtn} onClick={load}>↺ Actualizar</button>
       </div>
 
       <div className={styles.filters}>
@@ -87,65 +97,61 @@ export default function PendingDetectionsPage() {
       </div>
 
       {filtered.length === 0 ? (
-        <div className={styles.empty}>
-          <span className={styles.emptyIcon}>✅</span>
-          <p>No hay detecciones pendientes.</p>
-          {(filters.project || filters.camera || filters.species) && (
-            <button
-              className={styles.clearBtn}
+        <EmptyState
+          icon="✓"
+          title="No hay detecciones todavía"
+          description="Cuando WildStat encuentre eventos que superen el umbral de confianza, aparecerán en este centro de revisión."
+          action={(filters.project || filters.camera || filters.species) && (
+            <Button
+              variant="secondary"
               onClick={() => setFilters({ project: '', camera: '', species: '' })}
             >
               Limpiar filtros
-            </button>
+            </Button>
           )}
-        </div>
+        />
       ) : (
-        <div className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Frame</th>
-                <th>Especie IA</th>
-                <th>Confianza</th>
-                <th>Proyecto</th>
-                <th>Cámara</th>
-                <th>Timestamp</th>
-                <th>Estado</th>
-                <th>Fecha</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((d) => (
-                <tr key={d.id}>
-                  <td>
-                    <FrameThumb detectionId={d.id} />
-                  </td>
-                  <td>
-                    <span className={styles.species}>
-                      {d.aiSpecies || '—'}
-                    </span>
-                  </td>
-                  <td>
-                    <ConfidenceBar value={d.aiConfidence} />
-                  </td>
-                  <td>{d.project?.name || '—'}</td>
-                  <td>{d.camera?.code || '—'}</td>
-                  <td className={styles.mono}>{d.timestampVideo || '—'}</td>
-                  <td><StatusBadge status={d.reviewStatus} /></td>
-                  <td className={styles.date}>{fmt(d.detectedAt || d.createdAt)}</td>
-                  <td>
-                    <Link to={`/detections/${d.id}/review`} className={styles.reviewBtn}>
-                      Revisar →
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className={styles.reviewGrid}>
+          {filtered.map((d) => <DetectionCard key={d.id} detection={d} />)}
         </div>
       )}
     </div>
+  );
+}
+
+function DetectionCard({ detection }) {
+  const confidence = Number(detection.aiConfidence || 0);
+  const confidenceTone = confidence >= 0.75 ? 'success' : confidence >= 0.45 ? 'warning' : 'danger';
+  const confidenceLabel = confidence >= 0.75 ? 'Alta' : confidence >= 0.45 ? 'Media' : 'Baja';
+
+  return (
+    <Card className={styles.reviewCard} interactive>
+      <div className={styles.reviewFrame}>
+        <FrameThumb detectionId={detection.id} />
+      </div>
+      <div className={styles.reviewContent}>
+        <div className={styles.reviewHead}>
+          <div>
+            <span className={styles.kicker}>Especie sugerida</span>
+            <h3>{detection.aiSpecies || 'Posible jaguar'}</h3>
+          </div>
+          <Badge tone={confidenceTone}>{confidenceLabel}</Badge>
+        </div>
+        <ConfidenceBar value={detection.aiConfidence} />
+        <dl className={styles.metaGrid}>
+          <div><dt>Proyecto</dt><dd>{detection.project?.name || '—'}</dd></div>
+          <div><dt>Cámara</dt><dd>{detection.camera?.code || '—'}</dd></div>
+          <div><dt>Timestamp</dt><dd>{detection.timestampVideo || '—'}</dd></div>
+          <div><dt>Fecha</dt><dd>{fmt(detection.detectedAt || detection.createdAt)}</dd></div>
+        </dl>
+        <div className={styles.reviewFooter}>
+          <StatusBadge status={detection.reviewStatus} />
+          <Link to={`/detections/${detection.id}/review`} className={styles.reviewBtn}>
+            Revisar detección
+          </Link>
+        </div>
+      </div>
+    </Card>
   );
 }
 

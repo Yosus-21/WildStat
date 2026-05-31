@@ -4,6 +4,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 
 import LoginPage from './features/auth/pages/LoginPage';
+import DashboardPage from './features/dashboard/pages/DashboardPage';
+import ProjectsPage from './features/projects/pages/ProjectsPage';
+import CamerasPage from './features/cameras/pages/CamerasPage';
 import PendingDetectionsPage from './features/detections/pages/PendingDetectionsPage';
 import DetectionReviewPage from './features/detections/pages/DetectionReviewPage';
 import ValidatedDetectionsPage from './features/detections/pages/ValidatedDetectionsPage';
@@ -27,8 +30,13 @@ export default function App() {
               </ProtectedRoute>
             }
           >
-            <Route index element={<Navigate to="/detections/pending" replace />} />
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="projects" element={<ProjectsPage />} />
+            <Route path="cameras" element={<CamerasPage />} />
             <Route path="media/upload" element={<UploadMediaPage />} />
+            <Route path="media" element={<UploadMediaPage />} />
+            <Route path="detections" element={<PendingDetectionsPage />} />
             <Route path="detections/pending" element={<PendingDetectionsPage />} />
             <Route path="detections/validated" element={<ValidatedDetectionsPage />} />
             <Route path="detections/discarded" element={<DiscardedDetectionsPage />} />

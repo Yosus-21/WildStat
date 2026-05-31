@@ -297,6 +297,22 @@ export default function UploadMediaPage() {
     setUploadProgress(0);
   }
 
+  function setSelectedFile(nextFile) {
+    setFile(nextFile);
+    setUploadResult(null);
+    setStatus(null);
+    setDetections([]);
+    setError('');
+    setNotice('');
+    setUploadProgress(0);
+  }
+
+  function handleDrop(event) {
+    event.preventDefault();
+    if (!isInvestigator || uploading) return;
+    setSelectedFile(event.dataTransfer.files?.[0] || null);
+  }
+
   const currentStatus = status?.processingStatus || uploadResult?.mediaFile?.processingStatus;
   const statusLabel = STATUS_LABELS[currentStatus] || currentStatus || 'Esperando archivo';
   const canSubmit = isInvestigator && !uploading && !pollingRef.current;
@@ -365,8 +381,15 @@ export default function UploadMediaPage() {
               />
             </label>
 
-            <label>
+            <label
+              className={styles.dropZone}
+              onDragOver={(event) => event.preventDefault()}
+              onDrop={handleDrop}
+            >
               Archivo
+              <span className={styles.dropCopy}>
+                Arrastra una imagen o video aquí, o selecciona un archivo desde tu equipo.
+              </span>
               <input
                 type="file"
                 accept=".jpg,.jpeg,.png,.mp4,.mov,.avi,.mkv,image/jpeg,image/png,video/mp4,video/quicktime,video/x-msvideo,video/x-matroska"
