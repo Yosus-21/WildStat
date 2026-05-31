@@ -1,0 +1,24 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: faunalens_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: faunalens
+    ports:
+      - "5432:5432"
+    volumes:
+      - faunalens_postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: faunalens_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - faunalens_redis_data:/data
+
+volumes:
+  faunalens_postgres_data:
+  faunalens_redis_data:

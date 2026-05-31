@@ -1,0 +1,256 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  INVESTIGATOR
+  VIEWER
+}
+
+enum ProjectStatus {
+  DRAFT
+  PROCESSING
+  REVIEW
+  VALIDATED
+  PUBLISHED
+  PRIVATE
+}
+
+enum PrivacyStatus {
+  PRIVATE
+  INTERNAL
+  PUBLIC
+}
+
+enum MediaFileType {
+  IMAGE
+  VIDEO
+}
+
+enum ProcessingStatus {
+  UPLOADED
+  PROCESSING
+  PROCESSED
+  ERROR
+  PENDING_REVIEW
+  VALIDATED
+}
+
+enum ReviewStatus {
+  PENDING
+  VALIDATED
+  CORRECTED
+  DISCARDED
+  DOUBTFUL
+}
+
+enum Sex {
+  MALE
+  FEMALE
+  UNDETERMINED
+}
+
+enum IndependentStatus {
+  YES
+  NO
+  UNDETERMINED
+}
+
+model User {
+  id                 String      @id @default(cuid())
+  name               String
+  email              String      @unique
+  passwordHash       String
+  role               UserRole    @default(VIEWER)
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  projects           Project[]   @relation("ProjectCreator")
+  mediaFiles         MediaFile[] @relation("MediaUploader")
+  reviewedDetections Detection[] @relation("DetectionReviewer")
+}
+
+model Project {
+  id              String           @id @default(cuid())
+  name            String
+  organization    String?
+  responsible     String?
+  objective       String?
+  studyArea       String?
+  startDate       DateTime?
+  endDate         DateTime?
+  targetSpecies   String?
+  samplingAreaKm2 Decimal?         @db.Decimal(10, 2)
+  status          ProjectStatus    @default(DRAFT)
+  privacyStatus   PrivacyStatus    @default(PRIVATE)
+  createdById     String
+  createdBy       User             @relation("ProjectCreator", fields: [createdById], references: [id])
+  cameras         Camera[]
+  mediaFiles      MediaFile[]
+  detections      Detection[]
+  analysisResults AnalysisResult[]
+  reports         Report[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([createdById])
+  @@index([status])
+  @@index([privacyStatus])
+}
+
+model Camera {
+  id          String      @id @default(cuid())
+  projectId   String
+  project     Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  code        String
+  stationCode String?
+  zone        String?
+  latitude    Decimal?    @db.Decimal(9, 6)
+  longitude   Decimal?    @db.Decimal(9, 6)
+  habitatType String?
+  installDate DateTime?
+  removalDate DateTime?
+  status      String?
+  notes       String?
+  mediaFiles  MediaFile[]
+  detections  Detection[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([projectId, code])
+  @@index([projectId])
+}
+
+model Species {
+  id                  String      @id @default(cuid())
+  commonName          String      @unique
+  scientificName      String?
+  family              String?
+  orderName           String?
+  trophicGuild        String?
+  isJaguarPrey        Boolean     @default(false)
+  isTargetSpecies     Boolean     @default(false)
+  detections          Detection[]
+  validatedDetections Detection[] @relation("DetectionValidatedSpecies")
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+}
+
+model MediaFile {
+  id               String           @id @default(cuid())
+  projectId        String
+  project          Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  cameraId         String?
+  camera           Camera?          @relation(fields: [cameraId], references: [id], onDelete: SetNull)
+  uploadedById     String
+  uploadedBy       User             @relation("MediaUploader", fields: [uploadedById], references: [id])
+  fileName         String
+  originalName     String
+  fileType         MediaFileType
+  mimeType         String
+  filePath         String
+  uploadDate       DateTime         @default(now())
+  recordingDate    DateTime?
+  processingStatus ProcessingStatus @default(UPLOADED)
+  errorMessage     String?
+  detections       Detection[]
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@index([projectId])
+  @@index([cameraId])
+  @@index([uploadedById])
+  @@index([processingStatus])
+}
+
+model Detection {
+  id                  String            @id @default(cuid())
+  projectId           String
+  project             Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  cameraId            String?
+  camera              Camera?           @relation(fields: [cameraId], references: [id], onDelete: SetNull)
+  mediaFileId         String
+  mediaFile           MediaFile         @relation(fields: [mediaFileId], references: [id], onDelete: Cascade)
+  speciesId           String?
+  species             Species?          @relation(fields: [speciesId], references: [id], onDelete: SetNull)
+  timestampVideo      String?
+  timestampSeconds    Decimal?          @db.Decimal(10, 2)
+  startTime           Decimal?          @db.Decimal(10, 2)
+  endTime             Decimal?          @db.Decimal(10, 2)
+  framePath           String?
+  bbox                Json?
+  aiSpecies           String?
+  aiConfidence        Decimal?          @db.Decimal(5, 4)
+  validatedSpeciesId  String?
+  validatedSpeciesRef Species?          @relation("DetectionValidatedSpecies", fields: [validatedSpeciesId], references: [id], onDelete: SetNull)
+  detectedAt          DateTime?
+  month               Int?
+  hour                Int?
+  suggestedSpecies    String?
+  confidence          Decimal?          @db.Decimal(5, 4)
+  frameTimeSeconds    Decimal?          @db.Decimal(10, 2)
+  frameNumber         Int?
+  boundingBox         Json?
+  keyFramePath        String?
+  clipPath            String?
+  reviewStatus        ReviewStatus      @default(PENDING)
+  hasAnimal           Boolean?
+  reviewerId          String?
+  reviewer            User?             @relation("DetectionReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+  validatedSpecies    String?
+  sex                 Sex               @default(UNDETERMINED)
+  isIndependent       IndependentStatus @default(UNDETERMINED)
+  independentStatus   IndependentStatus @default(UNDETERMINED)
+  relatedDetectionId  String?
+  relatedDetection    Detection?        @relation("RelatedDetections", fields: [relatedDetectionId], references: [id], onDelete: SetNull)
+  relatedDetections   Detection[]       @relation("RelatedDetections")
+  notes               String?
+  validatedAt         DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@index([projectId])
+  @@index([cameraId])
+  @@index([mediaFileId])
+  @@index([speciesId])
+  @@index([validatedSpeciesId])
+  @@index([reviewStatus])
+  @@index([reviewerId])
+  @@index([relatedDetectionId])
+  @@index([aiSpecies])
+  @@index([aiConfidence])
+}
+
+model AnalysisResult {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name      String
+  metrics   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+}
+
+model Report {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title     String
+  format    String
+  filePath  String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+}

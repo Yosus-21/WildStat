@@ -1,0 +1,15 @@
+.venv
+__pycache__
+.pytest_cache
+.ruff_cache
+.env
+datasets/
+runs/
+outputs/
+models/yolo/runs/
+runs/
+videos/
+*.mp4
+*.mov
+*.avi
+*.mkv
