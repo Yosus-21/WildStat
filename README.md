@@ -2,7 +2,8 @@
 
 MVP para monitoreo de jaguar con camaras trampa. Incluye frontend React/Vite,
 backend NestJS/PostgreSQL/Prisma, Redis/BullMQ y microservicio IA FastAPI + YOLO.
-
+## link de la presentacion para el pitch
+https://canva.link/n4jyjq18osgmq7x
 ## Modulos
 
 - Carga de imagen/video desde frontend.
